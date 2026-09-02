@@ -1,0 +1,178 @@
+{
+  "meta": {
+    "jurisdiction": "oklahoma",
+    "tax_year": 2025,
+    "rule_version": "2025.0.0-draft",
+    "certification": "DRAFT",
+    "verified_by": null,
+    "verified_at": null,
+    "unverified_notice": "REQUIRES OFFICIAL VERIFICATION. Every value in this file was transcribed during development and has NOT been checked against Oklahoma Tax Commission publications, the Oklahoma Statutes, or the Form 511 instructions by a qualified reviewer. Oklahoma's confidence in these figures is lower than the federal set: the rate schedule, the standard deduction amounts, the personal exemption, and the subtraction caps each need independent confirmation, and Oklahoma enacted rate legislation in 2025 whose effective tax year must be confirmed before this file is certified. This rule set computes estimates only; the e-file layer will refuse to transmit returns based on it. See docs/TAX_RULE_GOVERNANCE.md.",
+    "sources": [
+      {
+        "id": "otc-511-instructions",
+        "authority": "Oklahoma Tax Commission",
+        "document": "Form 511 Packet (Oklahoma Resident Individual Income Tax Return), instructions",
+        "title": "Oklahoma Resident Individual Income Tax Forms and Instructions",
+        "url": "https://oklahoma.gov/tax/individuals/income-tax/individual-income-tax-forms.html",
+        "tax_year": 2025,
+        "notes": "REQUIRES OFFICIAL VERIFICATION: confirm the tax year 2025 packet, which is the controlling source for the rate schedule, standard deduction, exemption amount and every subtraction cap in this file."
+      },
+      {
+        "id": "okla-stat-68",
+        "authority": "Oklahoma Legislature",
+        "document": "Okla. Stat. tit. 68",
+        "title": "Oklahoma Revenue and Taxation Code, Article 23 (Income Tax)",
+        "url": "https://www.oklegislature.gov/",
+        "tax_year": 2025,
+        "notes": "REQUIRES OFFICIAL VERIFICATION: s.2355 sets the rate schedule and s.2358 the adjustments to federal AGI. Oklahoma enacted individual income tax rate legislation during the 2025 session; confirm its first effective tax year before certifying this file, since applying a future-year rate cut to tax year 2025 would understate every return."
+      },
+      {
+        "id": "otc-511-cr",
+        "authority": "Oklahoma Tax Commission",
+        "document": "Form 511-CR",
+        "title": "Other Credits Form",
+        "url": "https://oklahoma.gov/tax/",
+        "tax_year": 2025,
+        "notes": "Credits on Form 511-CR are outside the MVP scope. Only the credits listed in this file are computed."
+      }
+    ]
+  },
+
+  "values": {
+    "residency": {
+      "_source": "otc-511-instructions",
+      "_note": "Only full-year residents (Form 511) are computed. Part-year and nonresident returns use Form 511-NR, whose income-allocation rules are not implemented.",
+      "supported": ["FULL_YEAR_RESIDENT"],
+      "form_full_year": "511",
+      "form_part_year_or_nonresident": "511-NR"
+    },
+
+    "starting_point": {
+      "_source": "okla-stat-68",
+      "_note": "Oklahoma taxable income begins with federal adjusted gross income, not federal taxable income.",
+      "basis": "FEDERAL_ADJUSTED_GROSS_INCOME"
+    },
+
+    "tax_brackets": {
+      "_source": "okla-stat-68",
+      "_note": "REQUIRES OFFICIAL VERIFICATION of both the bracket edges and the top rate for tax year 2025. The married/HOH schedule uses bracket widths that are double the single schedule.",
+      "SINGLE": [
+        {"up_to": "1000", "rate": "0.0025"},
+        {"up_to": "2500", "rate": "0.0075"},
+        {"up_to": "3750", "rate": "0.0175"},
+        {"up_to": "4900", "rate": "0.0275"},
+        {"up_to": "7200", "rate": "0.0375"},
+        {"up_to": null, "rate": "0.0475"}
+      ],
+      "MARRIED_FILING_SEPARATELY": [
+        {"up_to": "1000", "rate": "0.0025"},
+        {"up_to": "2500", "rate": "0.0075"},
+        {"up_to": "3750", "rate": "0.0175"},
+        {"up_to": "4900", "rate": "0.0275"},
+        {"up_to": "7200", "rate": "0.0375"},
+        {"up_to": null, "rate": "0.0475"}
+      ],
+      "MARRIED_FILING_JOINTLY": [
+        {"up_to": "2000", "rate": "0.0025"},
+        {"up_to": "5000", "rate": "0.0075"},
+        {"up_to": "7500", "rate": "0.0175"},
+        {"up_to": "9800", "rate": "0.0275"},
+        {"up_to": "12200", "rate": "0.0375"},
+        {"up_to": null, "rate": "0.0475"}
+      ],
+      "HEAD_OF_HOUSEHOLD": [
+        {"up_to": "2000", "rate": "0.0025"},
+        {"up_to": "5000", "rate": "0.0075"},
+        {"up_to": "7500", "rate": "0.0175"},
+        {"up_to": "9800", "rate": "0.0275"},
+        {"up_to": "12200", "rate": "0.0375"},
+        {"up_to": null, "rate": "0.0475"}
+      ],
+      "QUALIFYING_SURVIVING_SPOUSE": [
+        {"up_to": "2000", "rate": "0.0025"},
+        {"up_to": "5000", "rate": "0.0075"},
+        {"up_to": "7500", "rate": "0.0175"},
+        {"up_to": "9800", "rate": "0.0275"},
+        {"up_to": "12200", "rate": "0.0375"},
+        {"up_to": null, "rate": "0.0475"}
+      ]
+    },
+
+    "standard_deduction": {
+      "_source": "otc-511-instructions",
+      "_note": "REQUIRES OFFICIAL VERIFICATION. Oklahoma's standard deduction is set by state law and does NOT track the federal amount. The values below reflect the pre-2018 federal amounts Oklahoma is understood to have retained.",
+      "SINGLE": "6350",
+      "MARRIED_FILING_SEPARATELY": "6350",
+      "MARRIED_FILING_JOINTLY": "12700",
+      "HEAD_OF_HOUSEHOLD": "9350",
+      "QUALIFYING_SURVIVING_SPOUSE": "12700",
+      "itemizing_requires_federal_itemizing": true
+    },
+
+    "personal_exemption": {
+      "_source": "otc-511-instructions",
+      "_note": "REQUIRES OFFICIAL VERIFICATION of the amount and of who counts as an exemption (taxpayer, spouse, each dependent, plus special exemptions for age 65+ and blindness subject to an income test).",
+      "amount_per_exemption": "1000",
+      "special_exemption_age_threshold": "65",
+      "special_exemption_income_limit": {
+        "SINGLE": "15000",
+        "MARRIED_FILING_JOINTLY": "25000",
+        "MARRIED_FILING_SEPARATELY": "12500",
+        "HEAD_OF_HOUSEHOLD": "20000",
+        "QUALIFYING_SURVIVING_SPOUSE": "25000"
+      }
+    },
+
+    "subtractions": {
+      "_source": "okla-stat-68",
+      "_note": "REQUIRES OFFICIAL VERIFICATION of every cap and of eligibility conditions.",
+      "social_security_fully_exempt": true,
+      "us_government_retirement_cap": "10000",
+      "oklahoma_government_retirement_cap": "10000",
+      "military_retirement_percentage": "1.00",
+      "military_retirement_note": "REQUIRES OFFICIAL VERIFICATION: Oklahoma is understood to have moved to a full exclusion of military retirement benefits; confirm the tax year in which that took effect and whether a cap still applies.",
+      "oklahoma_529_cap": {
+        "SINGLE": "10000",
+        "MARRIED_FILING_SEPARATELY": "10000",
+        "MARRIED_FILING_JOINTLY": "20000",
+        "HEAD_OF_HOUSEHOLD": "10000",
+        "QUALIFYING_SURVIVING_SPOUSE": "20000"
+      }
+    },
+
+    "credits": {
+      "_source": "otc-511-instructions",
+      "_note": "REQUIRES OFFICIAL VERIFICATION of rates, refundability and every income limit.",
+      "earned_income_credit": {
+        "rate_of_federal": "0.05",
+        "refundable": true,
+        "_note": "Oklahoma EIC as a percentage of the federal EIC. Confirm both the rate and refundability, which have changed more than once."
+      },
+      "child_care_child_tax_credit": {
+        "_note": "REQUIRES OFFICIAL VERIFICATION. Oklahoma allows the greater of a percentage of the federal child care credit or a percentage of the federal child tax credit, subject to a federal AGI limit.",
+        "child_care_rate_of_federal": "0.20",
+        "child_tax_rate_of_federal": "0.05",
+        "federal_agi_limit": "100000",
+        "refundable": false
+      },
+      "sales_tax_relief_credit": {
+        "_note": "REQUIRES OFFICIAL VERIFICATION of the amount, the income limits and the qualifying-household definition.",
+        "amount_per_household_member": "40",
+        "refundable": true,
+        "income_limit_standard": "20000",
+        "income_limit_expanded": "50000",
+        "_expanded_note": "The higher limit applies to households meeting additional conditions (age 65+, disability, or a dependent child). Confirm the exact conditions."
+      },
+      "credit_for_tax_paid_to_other_state": {
+        "_note": "Limited to the lesser of tax actually paid to the other state or the Oklahoma tax attributable to that income.",
+        "enabled": true
+      }
+    },
+
+    "withholding": {
+      "_source": "otc-511-instructions",
+      "state_code": "OK",
+      "_note": "Only withholding reported with an Oklahoma state code on a W-2 or 1099 is counted toward the Oklahoma return."
+    }
+  }
+}

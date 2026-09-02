@@ -1,0 +1,437 @@
+{
+  "meta": {
+    "jurisdiction": "federal",
+    "tax_year": 2025,
+    "rule_version": "2025.0.0-draft",
+    "certification": "DRAFT",
+    "verified_by": null,
+    "verified_at": null,
+    "unverified_notice": "REQUIRES OFFICIAL VERIFICATION. Every value in this file was transcribed from the cited sources during development and has NOT been checked against the primary documents by a qualified reviewer. Tax year 2025 is additionally affected by P.L. 119-21 (the 2025 reconciliation act), which amended several inflation-adjusted amounts published in Rev. Proc. 2024-40 before that revenue procedure took effect. Until a reviewer confirms each value against the final IRS publications and records verified_by/verified_at here, this rule set computes estimates only and the e-file layer will refuse to transmit returns based on it. See docs/TAX_RULE_GOVERNANCE.md.",
+    "sources": [
+      {
+        "id": "revproc-2024-40",
+        "authority": "Internal Revenue Service",
+        "document": "Rev. Proc. 2024-40",
+        "title": "Inflation-adjusted items for tax year 2025",
+        "url": "https://www.irs.gov/pub/irs-drop/rp-24-40.pdf",
+        "tax_year": 2025,
+        "notes": "REQUIRES OFFICIAL VERIFICATION: several amounts here were subsequently amended by P.L. 119-21. Confirm which figure controls for each line before certifying."
+      },
+      {
+        "id": "pl-119-21",
+        "authority": "United States Congress",
+        "document": "P.L. 119-21",
+        "title": "2025 reconciliation act amendments to individual income tax provisions",
+        "url": "",
+        "tax_year": 2025,
+        "notes": "REQUIRES OFFICIAL VERIFICATION: standard deduction, child tax credit, SALT cap and the new senior deduction are believed to be amended for tax year 2025. Confirm effective dates and final amounts against the enacted text and IRS implementing guidance."
+      },
+      {
+        "id": "irc",
+        "authority": "Internal Revenue Code",
+        "document": "26 U.S.C.",
+        "title": "Statutory rates and thresholds that are not inflation-indexed",
+        "url": "https://uscode.house.gov/browse/prelim@title26",
+        "tax_year": 2025,
+        "notes": "Applies to unindexed figures: NIIT thresholds (s.1411), Additional Medicare Tax (s.3101(b)(2)), Social Security taxability base amounts (s.86)."
+      },
+      {
+        "id": "irs-pub17",
+        "authority": "Internal Revenue Service",
+        "document": "Publication 17",
+        "title": "Your Federal Income Tax",
+        "url": "https://www.irs.gov/pub17",
+        "tax_year": 2025,
+        "notes": "Secondary source used for worksheet ordering, not for authoritative amounts."
+      }
+    ]
+  },
+
+  "values": {
+    "filing_statuses": {
+      "_source": "irc",
+      "supported": ["SINGLE", "MARRIED_FILING_JOINTLY", "MARRIED_FILING_SEPARATELY", "HEAD_OF_HOUSEHOLD", "QUALIFYING_SURVIVING_SPOUSE"]
+    },
+
+    "standard_deduction": {
+      "_source": "pl-119-21",
+      "_note": "Base amounts believed amended by P.L. 119-21 above the Rev. Proc. 2024-40 figures of 15000/30000/15000/22500. REQUIRES OFFICIAL VERIFICATION.",
+      "base": {
+        "SINGLE": "15750",
+        "MARRIED_FILING_JOINTLY": "31500",
+        "MARRIED_FILING_SEPARATELY": "15750",
+        "HEAD_OF_HOUSEHOLD": "23625",
+        "QUALIFYING_SURVIVING_SPOUSE": "31500"
+      },
+      "additional_aged_or_blind": {
+        "_note": "IRC s.63(f). Per qualifying condition, per person; a taxpayer who is both 65+ and blind receives two.",
+        "married": "1600",
+        "unmarried": "2000"
+      },
+      "dependent_limit": {
+        "_note": "IRC s.63(c)(5): greater of the floor or earned income plus the increment, capped at the regular standard deduction.",
+        "floor": "1350",
+        "earned_income_increment": "450"
+      },
+      "age_threshold": "65",
+      "age_measured_at_start_of_following_year": true
+    },
+
+    "senior_deduction": {
+      "_source": "pl-119-21",
+      "_note": "New deduction for taxpayers 65 or older, available in addition to the standard deduction. REQUIRES OFFICIAL VERIFICATION of amount, phase-out mechanics and interaction with itemizing.",
+      "amount_per_qualifying_individual": "6000",
+      "phaseout_rate": "0.06",
+      "phaseout_threshold": {
+        "SINGLE": "75000",
+        "MARRIED_FILING_JOINTLY": "150000",
+        "MARRIED_FILING_SEPARATELY": "75000",
+        "HEAD_OF_HOUSEHOLD": "75000",
+        "QUALIFYING_SURVIVING_SPOUSE": "150000"
+      },
+      "age_threshold": "65"
+    },
+
+    "ordinary_income_brackets": {
+      "_source": "revproc-2024-40",
+      "SINGLE": [
+        {"up_to": "11925", "rate": "0.10"},
+        {"up_to": "48475", "rate": "0.12"},
+        {"up_to": "103350", "rate": "0.22"},
+        {"up_to": "197300", "rate": "0.24"},
+        {"up_to": "250525", "rate": "0.32"},
+        {"up_to": "626350", "rate": "0.35"},
+        {"up_to": null, "rate": "0.37"}
+      ],
+      "MARRIED_FILING_JOINTLY": [
+        {"up_to": "23850", "rate": "0.10"},
+        {"up_to": "96950", "rate": "0.12"},
+        {"up_to": "206700", "rate": "0.22"},
+        {"up_to": "394600", "rate": "0.24"},
+        {"up_to": "501050", "rate": "0.32"},
+        {"up_to": "751600", "rate": "0.35"},
+        {"up_to": null, "rate": "0.37"}
+      ],
+      "MARRIED_FILING_SEPARATELY": [
+        {"up_to": "11925", "rate": "0.10"},
+        {"up_to": "48475", "rate": "0.12"},
+        {"up_to": "103350", "rate": "0.22"},
+        {"up_to": "197300", "rate": "0.24"},
+        {"up_to": "250525", "rate": "0.32"},
+        {"up_to": "375800", "rate": "0.35"},
+        {"up_to": null, "rate": "0.37"}
+      ],
+      "HEAD_OF_HOUSEHOLD": [
+        {"up_to": "17000", "rate": "0.10"},
+        {"up_to": "64850", "rate": "0.12"},
+        {"up_to": "103350", "rate": "0.22"},
+        {"up_to": "197300", "rate": "0.24"},
+        {"up_to": "250525", "rate": "0.32"},
+        {"up_to": "626350", "rate": "0.35"},
+        {"up_to": null, "rate": "0.37"}
+      ],
+      "QUALIFYING_SURVIVING_SPOUSE": [
+        {"up_to": "23850", "rate": "0.10"},
+        {"up_to": "96950", "rate": "0.12"},
+        {"up_to": "206700", "rate": "0.22"},
+        {"up_to": "394600", "rate": "0.24"},
+        {"up_to": "501050", "rate": "0.32"},
+        {"up_to": "751600", "rate": "0.35"},
+        {"up_to": null, "rate": "0.37"}
+      ]
+    },
+
+    "capital_gains_brackets": {
+      "_source": "revproc-2024-40",
+      "_note": "IRC s.1(h) maximum rates on adjusted net capital gain and qualified dividends.",
+      "SINGLE": [
+        {"up_to": "48350", "rate": "0.00"},
+        {"up_to": "533400", "rate": "0.15"},
+        {"up_to": null, "rate": "0.20"}
+      ],
+      "MARRIED_FILING_JOINTLY": [
+        {"up_to": "96700", "rate": "0.00"},
+        {"up_to": "600050", "rate": "0.15"},
+        {"up_to": null, "rate": "0.20"}
+      ],
+      "MARRIED_FILING_SEPARATELY": [
+        {"up_to": "48350", "rate": "0.00"},
+        {"up_to": "300000", "rate": "0.15"},
+        {"up_to": null, "rate": "0.20"}
+      ],
+      "HEAD_OF_HOUSEHOLD": [
+        {"up_to": "64750", "rate": "0.00"},
+        {"up_to": "566700", "rate": "0.15"},
+        {"up_to": null, "rate": "0.20"}
+      ],
+      "QUALIFYING_SURVIVING_SPOUSE": [
+        {"up_to": "96700", "rate": "0.00"},
+        {"up_to": "600050", "rate": "0.15"},
+        {"up_to": null, "rate": "0.20"}
+      ]
+    },
+
+    "capital_loss": {
+      "_source": "irc",
+      "_note": "IRC s.1211(b). Unindexed.",
+      "annual_deduction_limit": "3000",
+      "annual_deduction_limit_mfs": "1500"
+    },
+
+    "child_tax_credit": {
+      "_source": "pl-119-21",
+      "_note": "Per-child amount believed amended by P.L. 119-21 from 2000. REQUIRES OFFICIAL VERIFICATION.",
+      "amount_per_child": "2200",
+      "refundable_limit_per_child": "1700",
+      "qualifying_child_max_age": "16",
+      "requires_ssn_valid_for_employment": true,
+      "phaseout_threshold": {
+        "SINGLE": "200000",
+        "MARRIED_FILING_JOINTLY": "400000",
+        "MARRIED_FILING_SEPARATELY": "200000",
+        "HEAD_OF_HOUSEHOLD": "200000",
+        "QUALIFYING_SURVIVING_SPOUSE": "200000"
+      },
+      "phaseout_increment": "1000",
+      "phaseout_reduction_per_increment": "50",
+      "additional_ctc_earned_income_floor": "2500",
+      "additional_ctc_earned_income_rate": "0.15"
+    },
+
+    "other_dependent_credit": {
+      "_source": "irc",
+      "amount_per_dependent": "500",
+      "shares_ctc_phaseout": true
+    },
+
+    "earned_income_credit": {
+      "_source": "revproc-2024-40",
+      "_note": "IRC s.32. Phase-in and phase-out rates are statutory; earned income amounts, maximum credits and threshold phase-out amounts are inflation-adjusted. REQUIRES OFFICIAL VERIFICATION.",
+      "investment_income_limit": "11950",
+      "childless_min_age": "25",
+      "childless_max_age": "64",
+      "tiers": [
+        {
+          "children": "0",
+          "earned_income_amount": "8490",
+          "max_credit": "649",
+          "phase_in_rate": "0.0765",
+          "phase_out_rate": "0.0765",
+          "phase_out_threshold_unmarried": "10620",
+          "phase_out_threshold_joint": "17730"
+        },
+        {
+          "children": "1",
+          "earned_income_amount": "12730",
+          "max_credit": "4328",
+          "phase_in_rate": "0.34",
+          "phase_out_rate": "0.1598",
+          "phase_out_threshold_unmarried": "23350",
+          "phase_out_threshold_joint": "30470"
+        },
+        {
+          "children": "2",
+          "earned_income_amount": "17880",
+          "max_credit": "7152",
+          "phase_in_rate": "0.40",
+          "phase_out_rate": "0.2106",
+          "phase_out_threshold_unmarried": "23350",
+          "phase_out_threshold_joint": "30470"
+        },
+        {
+          "children": "3",
+          "earned_income_amount": "17880",
+          "max_credit": "8046",
+          "phase_in_rate": "0.45",
+          "phase_out_rate": "0.2106",
+          "phase_out_threshold_unmarried": "23350",
+          "phase_out_threshold_joint": "30470"
+        }
+      ]
+    },
+
+    "self_employment_tax": {
+      "_source": "revproc-2024-40",
+      "_note": "Wage base is set annually by the Social Security Administration, not the IRS. REQUIRES OFFICIAL VERIFICATION against the SSA cost-of-living announcement.",
+      "net_earnings_factor": "0.9235",
+      "minimum_net_earnings": "400",
+      "social_security_rate": "0.124",
+      "social_security_wage_base": "176100",
+      "medicare_rate": "0.029",
+      "deductible_share": "0.50"
+    },
+
+    "additional_medicare_tax": {
+      "_source": "irc",
+      "_note": "IRC s.3101(b)(2). Thresholds are not inflation-indexed.",
+      "rate": "0.009",
+      "threshold": {
+        "SINGLE": "200000",
+        "MARRIED_FILING_JOINTLY": "250000",
+        "MARRIED_FILING_SEPARATELY": "125000",
+        "HEAD_OF_HOUSEHOLD": "200000",
+        "QUALIFYING_SURVIVING_SPOUSE": "200000"
+      }
+    },
+
+    "net_investment_income_tax": {
+      "_source": "irc",
+      "_note": "IRC s.1411. Thresholds are not inflation-indexed.",
+      "rate": "0.038",
+      "threshold": {
+        "SINGLE": "200000",
+        "MARRIED_FILING_JOINTLY": "250000",
+        "MARRIED_FILING_SEPARATELY": "125000",
+        "HEAD_OF_HOUSEHOLD": "200000",
+        "QUALIFYING_SURVIVING_SPOUSE": "250000"
+      }
+    },
+
+    "social_security_taxability": {
+      "_source": "irc",
+      "_note": "IRC s.86. Base amounts are not inflation-indexed and have not changed since 1993.",
+      "first_tier_rate": "0.50",
+      "second_tier_rate": "0.85",
+      "base_amount": {
+        "SINGLE": "25000",
+        "MARRIED_FILING_JOINTLY": "32000",
+        "MARRIED_FILING_SEPARATELY": "0",
+        "HEAD_OF_HOUSEHOLD": "25000",
+        "QUALIFYING_SURVIVING_SPOUSE": "25000"
+      },
+      "adjusted_base_amount": {
+        "SINGLE": "34000",
+        "MARRIED_FILING_JOINTLY": "44000",
+        "MARRIED_FILING_SEPARATELY": "0",
+        "HEAD_OF_HOUSEHOLD": "34000",
+        "QUALIFYING_SURVIVING_SPOUSE": "34000"
+      }
+    },
+
+    "itemized_deductions": {
+      "_source": "pl-119-21",
+      "_note": "SALT cap believed amended by P.L. 119-21 from 10000, with a phase-down for higher incomes. REQUIRES OFFICIAL VERIFICATION of the cap, the phase-down rate and the floor.",
+      "medical_agi_floor_rate": "0.075",
+      "salt_cap": "40000",
+      "salt_cap_mfs": "20000",
+      "salt_cap_phasedown_threshold": "500000",
+      "salt_cap_phasedown_rate": "0.30",
+      "salt_cap_phasedown_floor": "10000",
+      "charitable_agi_limit_cash": "0.60"
+    },
+
+    "adjustments": {
+      "_source": "revproc-2024-40",
+      "educator_expense_limit": "300",
+      "student_loan_interest_limit": "2500",
+      "student_loan_interest_phaseout": {
+        "SINGLE": {"start": "85000", "end": "100000"},
+        "MARRIED_FILING_JOINTLY": {"start": "170000", "end": "200000"},
+        "HEAD_OF_HOUSEHOLD": {"start": "85000", "end": "100000"},
+        "QUALIFYING_SURVIVING_SPOUSE": {"start": "85000", "end": "100000"}
+      },
+      "student_loan_interest_disallowed_for_mfs": true
+    },
+
+    "child_and_dependent_care_credit": {
+      "_source": "irc",
+      "_note": "IRC s.21. Nonrefundable for 2025; the 2021 refundable expansion was not extended.",
+      "expense_limit_one_person": "3000",
+      "expense_limit_multiple_persons": "6000",
+      "max_rate": "0.35",
+      "min_rate": "0.20",
+      "rate_phasedown_agi_start": "15000",
+      "rate_phasedown_increment": "2000",
+      "rate_phasedown_step": "0.01",
+      "qualifying_child_max_age": "12",
+      "refundable": false
+    },
+
+    "education_credits": {
+      "_source": "revproc-2024-40",
+      "aotc": {
+        "max_credit": "2500",
+        "full_rate_expenses": "2000",
+        "partial_rate": "0.25",
+        "partial_rate_expenses": "2000",
+        "refundable_share": "0.40",
+        "refundable_cap": "1000",
+        "phaseout": {
+          "SINGLE": {"start": "80000", "end": "90000"},
+          "MARRIED_FILING_JOINTLY": {"start": "160000", "end": "180000"},
+          "HEAD_OF_HOUSEHOLD": {"start": "80000", "end": "90000"},
+          "QUALIFYING_SURVIVING_SPOUSE": {"start": "80000", "end": "90000"}
+        },
+        "disallowed_for_mfs": true
+      },
+      "llc": {
+        "rate": "0.20",
+        "expense_limit": "10000",
+        "phaseout": {
+          "SINGLE": {"start": "80000", "end": "90000"},
+          "MARRIED_FILING_JOINTLY": {"start": "160000", "end": "180000"},
+          "HEAD_OF_HOUSEHOLD": {"start": "80000", "end": "90000"},
+          "QUALIFYING_SURVIVING_SPOUSE": {"start": "80000", "end": "90000"}
+        },
+        "disallowed_for_mfs": true
+      }
+    },
+
+    "savers_credit": {
+      "_source": "revproc-2024-40",
+      "_note": "IRC s.25B. Nonrefundable.",
+      "contribution_limit": "2000",
+      "tiers": {
+        "SINGLE": [
+          {"up_to": "23750", "rate": "0.50"},
+          {"up_to": "25500", "rate": "0.20"},
+          {"up_to": "39500", "rate": "0.10"},
+          {"up_to": null, "rate": "0.00"}
+        ],
+        "MARRIED_FILING_JOINTLY": [
+          {"up_to": "47500", "rate": "0.50"},
+          {"up_to": "51000", "rate": "0.20"},
+          {"up_to": "79000", "rate": "0.10"},
+          {"up_to": null, "rate": "0.00"}
+        ],
+        "MARRIED_FILING_SEPARATELY": [
+          {"up_to": "23750", "rate": "0.50"},
+          {"up_to": "25500", "rate": "0.20"},
+          {"up_to": "39500", "rate": "0.10"},
+          {"up_to": null, "rate": "0.00"}
+        ],
+        "HEAD_OF_HOUSEHOLD": [
+          {"up_to": "35625", "rate": "0.50"},
+          {"up_to": "38250", "rate": "0.20"},
+          {"up_to": "59250", "rate": "0.10"},
+          {"up_to": null, "rate": "0.00"}
+        ],
+        "QUALIFYING_SURVIVING_SPOUSE": [
+          {"up_to": "47500", "rate": "0.50"},
+          {"up_to": "51000", "rate": "0.20"},
+          {"up_to": "79000", "rate": "0.10"},
+          {"up_to": null, "rate": "0.00"}
+        ]
+      }
+    },
+
+    "qualified_business_income": {
+      "_source": "revproc-2024-40",
+      "_note": "IRC s.199A. Only the below-threshold simple case is implemented; see capability.py.",
+      "rate": "0.20",
+      "threshold": {
+        "SINGLE": "197300",
+        "MARRIED_FILING_JOINTLY": "394600",
+        "MARRIED_FILING_SEPARATELY": "197300",
+        "HEAD_OF_HOUSEHOLD": "197300",
+        "QUALIFYING_SURVIVING_SPOUSE": "394600"
+      }
+    },
+
+    "filing_requirement": {
+      "_source": "irs-pub17",
+      "_note": "Used only to tell a taxpayer they may not need to file. Never used to block filing, since filing when not required is often how a refund is claimed.",
+      "gross_income_threshold_is_standard_deduction": true
+    }
+  }
+}

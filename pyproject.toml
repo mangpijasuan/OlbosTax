@@ -1,0 +1,33 @@
+[project]
+name = "olbostax"
+version = "0.1.0"
+description = "OlbosTax - transparent flat-price tax preparation and filing"
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+testpaths = ["tests", "packages", "services", "apps/api"]
+python_files = ["test_*.py"]
+addopts = "-q --strict-markers"
+markers = [
+    "tax_engine: deterministic tax calculation tests",
+    "regression: locked expected values that must not drift",
+    "security: security control tests",
+    "integration: requires a database",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "S", "C4", "SIM"]
+ignore = ["S101"]
+
+[tool.ruff.lint.per-file-ignores]
+"**/tests/**" = ["S", "E501"]
+"tests/**" = ["S", "E501"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+ignore_missing_imports = true

@@ -1,0 +1,15 @@
+[project]
+name = "olbostax-engine"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = ["pydantic>=2.10", "olbostax-schema"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+olbostax_engine = ["rules/data/**/*.json"]
