@@ -93,3 +93,65 @@ def test_non_sensitive_fields_stay_readable():
     assert stored["taxpayer"]["first_name"] == "Dana"
     assert stored["filing_status"] == "SINGLE"
     assert stored["tax_year"] == 2025
+
+
+class TestKeyringGuard:
+    """The cipher must never fall back to a throwaway key outside development.
+
+    This is a regression test for a real defect: `get_cipher` used to check for
+    configured keys first and, finding none, construct a LocalKeyring directly
+    with an ephemeral key -- bypassing the environment check entirely. In
+    production that would have encrypted every taxpayer identifier under a key
+    that vanished on the next restart, silently, while the docstring claimed the
+    opposite.
+    """
+
+    @pytest.fixture(autouse=True)
+    def _clear_cipher_cache(self):
+        from olbostax_api.services import crypto
+
+        crypto.get_cipher.cache_clear()
+        yield
+        crypto.get_cipher.cache_clear()
+
+    @pytest.mark.parametrize("environment", ["production", "staging"])
+    def test_refuses_outside_development(self, monkeypatch, environment):
+        from olbostax_api.services.crypto import get_cipher
+
+        monkeypatch.setenv("OLBOSTAX_ENV", environment)
+        monkeypatch.delenv("OLBOSTAX_FIELD_ENCRYPTION_KEYS", raising=False)
+
+        with pytest.raises(RuntimeError, match="must not be used"):
+            get_cipher()
+
+    @pytest.mark.parametrize("environment", ["local", "test", "development"])
+    def test_development_still_works_without_configured_keys(self, monkeypatch, environment):
+        """The guard must not make local development impossible."""
+        from olbostax_api.services.crypto import get_cipher
+
+        monkeypatch.setenv("OLBOSTAX_ENV", environment)
+        monkeypatch.delenv("OLBOSTAX_FIELD_ENCRYPTION_KEYS", raising=False)
+
+        cipher = get_cipher()
+        token = cipher.encrypt("123456789", context="taxpayer:x.ssn")
+        assert cipher.decrypt(token, context="taxpayer:x.ssn") == "123456789"
+
+    def test_production_refuses_even_with_env_var_keys(self, monkeypatch):
+        """Keys in an environment variable are not a substitute for a KMS.
+
+        A plausible "fix" for the refusal above is to set the keys as an
+        environment variable in production. That is barely better than not
+        encrypting: the key sits in the process environment, in the deployment
+        config, and in any crash dump. The guard rejects it.
+        """
+        import json
+
+        from olbostax_api.services.crypto import get_cipher
+        from olbostax_security import generate_key
+
+        monkeypatch.setenv("OLBOSTAX_ENV", "production")
+        monkeypatch.setenv(
+            "OLBOSTAX_FIELD_ENCRYPTION_KEYS", json.dumps({"1": generate_key()})
+        )
+        with pytest.raises(RuntimeError, match="must not be used"):
+            get_cipher()

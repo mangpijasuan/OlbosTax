@@ -8,6 +8,21 @@ import { api, hasAccessToken, type Computation } from "@/lib/api";
 import { money } from "@/lib/format";
 
 /**
+ * Statuses whose return version the API will refuse to modify.
+ *
+ * Kept in step with `ReturnStatus.is_finalized` by
+ * tests/api/test_cross_language_consistency.py -- the API and the UI acting on
+ * different lists is a silent failure that surfaces as an error message shown
+ * to a taxpayer looking at a return they already filed.
+ */
+const FINALIZED_STATUSES = new Set([
+  "SUBMITTED",
+  "ACCEPTED",
+  "REJECTED",
+  "SUPERSEDED",
+]);
+
+/**
  * Final review (spec sections 12, 16 and 31).
  *
  * The last screen before payment, and the one where the promise of
@@ -31,6 +46,18 @@ export default function ReviewPage({ params }: { params: Promise<{ id: string }>
       .getReturn(id)
       .then(async (details) => {
         setStatus(details.status);
+
+        // A finalized return is read-only. Saving it to force a fresh
+        // calculation would be rejected with a 409, and the taxpayer would be
+        // shown an error for the ordinary act of looking at a return they have
+        // already filed. Read the stored calculation instead -- which is also
+        // the more correct thing to display: what was computed at the time it
+        // was filed, not what today's engine makes of the same inputs.
+        if (FINALIZED_STATUSES.has(details.status)) {
+          setComputation(await api.getStoredComputation(id));
+          return;
+        }
+
         const saved = await api.saveReturn(id, details.return_input);
         setComputation(saved.computation);
       })

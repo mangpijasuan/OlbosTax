@@ -20,8 +20,6 @@ storing plaintext, and it puts the decision in a diff a reviewer will see.
 
 from __future__ import annotations
 
-import base64
-import os
 from functools import lru_cache
 from typing import Any
 
@@ -53,27 +51,24 @@ _ENCRYPTED_PREFIX = "enc:"
 def get_cipher() -> FieldCipher:
     """The configured field cipher.
 
-    In production this must be constructed from a KMS-backed keyring. The
-    local keyring refuses to run outside a development environment, so a
-    production process reaching here without KMS configuration fails at first
-    use rather than encrypting under a throwaway key.
+    Every path goes through ``LocalKeyring.from_environment``, which refuses to
+    run outside a development environment. That single entry point is the whole
+    guarantee: a production process reaching here without KMS configuration
+    fails loudly at first use rather than encrypting taxpayer identifiers under
+    a throwaway key that vanishes on restart.
+
+    An earlier version of this function checked for configured keys first and,
+    finding none, constructed a ``LocalKeyring`` directly with an ephemeral
+    key -- bypassing that refusal entirely, in exactly the environment where it
+    mattered most. The lesson is not "remember the guard" but "have one door":
+    the ephemeral fallback for local development lives inside
+    ``from_environment`` alongside the environment check, so the two cannot
+    drift apart again.
+
+    When a KMS is integrated, it is substituted here, and this is the only
+    function that needs to change.
     """
-    raw = os.environ.get("OLBOSTAX_FIELD_ENCRYPTION_KEYS")
-    if raw:
-        return FieldCipher(LocalKeyring.from_environment())
-    key_id = "ephemeral"
-    return FieldCipher(
-        LocalKeyring(
-            keys={key_id: base64.urlsafe_b64decode(_generate_ephemeral())},
-            active=key_id,
-        )
-    )
-
-
-def _generate_ephemeral() -> str:
-    from olbostax_security import generate_key
-
-    return generate_key()
+    return FieldCipher(LocalKeyring.from_environment())
 
 
 def _walk(document: Any, parts: list[str], apply: Any) -> None:
