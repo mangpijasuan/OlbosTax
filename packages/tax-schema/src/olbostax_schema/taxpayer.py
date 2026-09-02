@@ -33,9 +33,16 @@ class Address(BaseModel):
 
 
 class Person(BaseModel):
-    """Fields common to the taxpayer, the spouse and every dependent."""
+    """Fields common to the taxpayer, the spouse and every dependent.
 
-    model_config = ConfigDict(extra="forbid")
+    ``validate_assignment`` is on because these models hold sensitive value
+    types. Without it, ``taxpayer.ssn = "123456789"`` stores a plain ``str``,
+    silently discarding the masking and reveal() discipline that the ``SSN``
+    type exists to enforce -- the field would then render in full in any log
+    line or error message that touched it.
+    """
+
+    model_config = ConfigDict(extra="forbid", validate_assignment=True)
 
     first_name: str = Field(min_length=1, max_length=20)
     middle_initial: str = Field(default="", max_length=1)
