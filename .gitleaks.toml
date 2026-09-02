@@ -1,0 +1,42 @@
+# Gitleaks configuration.
+#
+# The default rule set is kept in full. This file records the one place where a
+# finding is a false positive, scoped as tightly as the tool allows: a specific
+# file AND specific invented values, both of which must match before a finding
+# is dismissed.
+#
+# Why the exception exists: `tests/security/test_security.py` proves that the
+# log redaction layer catches realistic-looking secrets. A test feeding it
+# obviously-fake input ("SECRET_GOES_HERE") would pass while saying nothing
+# about whether the patterns match the shapes real credentials actually take --
+# which is the entire property under test. So the fixtures look like
+# credentials, and a scanner reading them cannot tell the difference. Neither
+# could a reviewer, which is why they are named here rather than left to be
+# puzzled over.
+#
+# The two values below are invented. They authenticate to nothing.
+#
+# Note the `condition = "AND"`. Allowlisting the file by path alone would mean
+# a real secret committed there in future goes unreported, and a security test
+# file is not a place where that risk is worth taking. Because the values are
+# pinned, adding another realistic-looking fixture will fail this scan until it
+# is listed here -- forcing the decision to be made explicitly, in a diff
+# someone reviews. That friction is the point.
+#
+# Verified against gitleaks 8.24.3, the version the CI action installs: with
+# this file the PR's commit range scans clean, and a canary file containing
+# real-shaped credentials is still caught.
+
+title = "OlbosTax"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Invented credential fixtures used to test log redaction"
+condition = "AND"
+paths = ["tests/security/test_security\\.py"]
+regexes = [
+  "sk_live_abc123",
+  "eyJhbGciOi\\.eyJzdWIiOiIx\\.SflKxwRJSMeKKF2QT4",
+]

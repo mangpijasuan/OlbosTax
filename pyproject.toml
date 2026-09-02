@@ -8,6 +8,12 @@ requires-python = ">=3.11"
 testpaths = ["tests", "packages", "services", "apps/api"]
 python_files = ["test_*.py"]
 addopts = "-q --strict-markers"
+
+# Put the repository root on sys.path so `from tests.fixtures... import ...`
+# resolves. Without this, `python -m pytest` works (it prepends the working
+# directory) while a bare `pytest` fails -- which is exactly how a suite passes
+# on a developer's machine and fails in CI.
+pythonpath = ["."]
 markers = [
     "tax_engine: deterministic tax calculation tests",
     "regression: locked expected values that must not drift",
