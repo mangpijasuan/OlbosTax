@@ -6,6 +6,12 @@ Social Security Administration does not issue to individuals (900-999 is
 reserved for ITINs and has never been assigned as an SSN), so none of these
 values can collide with a real person's number.
 
+Email addresses use ``example.com``, which IANA reserves for documentation and
+which accepts no mail. The obvious alternative, ``.invalid``, is reserved by
+RFC 2606 to be *permanently* invalid -- and is therefore rejected by the API's
+email validation, correctly: a taxpayer who entered one would never receive
+their filing status.
+
 Each fixture is a plausible whole taxpayer rather than a minimal input,
 because the bugs worth catching live in the interactions -- a W-2 plus a
 1099-NEC plus a child, not a W-2 alone.
@@ -69,7 +75,7 @@ def synthetic_taxpayer_001() -> TaxReturnInput:
             last_name="Whitfield",
             ssn="900-11-0001",
             date_of_birth=date(1992, 4, 18),
-            email="dana.whitfield@example.invalid",
+            email="dana.whitfield@example.com",
             phone="405-555-0101",
             address=_OK_ADDRESS,
         ),
@@ -113,7 +119,7 @@ def synthetic_married_family_001() -> TaxReturnInput:
             last_name="Okafor",
             ssn="900-22-0002",
             date_of_birth=date(1986, 9, 3),
-            email="marcus.okafor@example.invalid",
+            email="marcus.okafor@example.com",
             address=_OK_ADDRESS,
         ),
         spouse=Spouse(
@@ -199,7 +205,7 @@ def synthetic_self_employed_001() -> TaxReturnInput:
             last_name="Begay",
             ssn="900-33-0006",
             date_of_birth=date(1983, 12, 5),
-            email="rosalind.begay@example.invalid",
+            email="rosalind.begay@example.com",
             address=_OK_ADDRESS,
         ),
         dependents=[
@@ -253,7 +259,7 @@ def synthetic_retiree_001() -> TaxReturnInput:
             last_name="Lindqvist",
             ssn="900-44-0008",
             date_of_birth=date(1956, 3, 14),
-            email="harold.lindqvist@example.invalid",
+            email="harold.lindqvist@example.com",
             address=_OK_ADDRESS,
         ),
         spouse=Spouse(
@@ -307,7 +313,7 @@ def synthetic_low_income_eitc_001() -> TaxReturnInput:
             last_name="Ramirez",
             ssn="900-55-0010",
             date_of_birth=date(1996, 7, 30),
-            email="tasha.ramirez@example.invalid",
+            email="tasha.ramirez@example.com",
             address=_OK_ADDRESS,
         ),
         dependents=[

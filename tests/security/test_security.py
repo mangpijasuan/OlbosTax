@@ -304,9 +304,9 @@ class TestLoginThrottle:
     def test_locks_after_max_attempts(self):
         throttle = LoginThrottle(max_attempts=3)
         for _ in range(2):
-            locked, _ = throttle.record_failure("user@example.invalid")
+            locked, _ = throttle.record_failure("user@example.com")
             assert not locked
-        locked, seconds = throttle.record_failure("user@example.invalid")
+        locked, seconds = throttle.record_failure("user@example.com")
         assert locked
         assert seconds > 0
 
