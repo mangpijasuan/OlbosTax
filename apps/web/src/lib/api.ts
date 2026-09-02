@@ -209,7 +209,36 @@ export const api = {
       body: JSON.stringify({ return_input: returnInput }),
     }),
 
-  getCalculation: (id: string) => request<unknown>(`/api/v1/returns/${id}/calculation`),
+  /**
+   * The stored calculation for a return, without modifying it.
+   *
+   * Used for returns that are finalized and therefore read-only. The API
+   * returns the snapshot taken when the return was computed, including the
+   * engine and rule versions in force at the time -- which is what should be
+   * displayed for a filed return, rather than what today's engine would make
+   * of the same inputs.
+   */
+  getStoredComputation: async (id: string): Promise<Computation> => {
+    const stored = await request<{
+      federal: FederalResult | null;
+      oklahoma: OklahomaResult | null;
+      findings: CapabilityFinding[];
+      trace: { steps: CalculationBreakdownStep[] };
+      rule_sets_certified: boolean;
+    }>(`/api/v1/returns/${id}/calculation`);
+
+    const shown = new Set(["RESULT", "LIMITATION", "SUBTOTAL"]);
+    return {
+      federal: stored.federal,
+      oklahoma: stored.oklahoma,
+      findings: stored.findings ?? [],
+      breakdown: (stored.trace?.steps ?? []).filter((step) => shown.has(step.kind)),
+      // A filed return is not re-offered for filing, so this is reported as
+      // stored rather than recomputed.
+      can_be_filed: false,
+      rule_sets_certified: stored.rule_sets_certified,
+    };
+  },
 
   checkout: (returnId: string) =>
     request<{
