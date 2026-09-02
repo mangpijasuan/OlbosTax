@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+coverage.xml
+
+# Node
+node_modules/
+.next/
+out/
+dist/
+build/
+.turbo/
+*.tsbuildinfo
+
+# Secrets & environment  -- NEVER commit these
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+!**/testdata/*.key
+secrets/
+*.kms.json
+
+# Local data
+*.sqlite3
+*.db
+uploads/
+storage/
+tmp/
+.DS_Store
+
+# Taxpayer data must never be committed
+**/taxpayer_data/
+**/real_returns/

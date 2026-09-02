@@ -1,0 +1,28 @@
+# --- API ---
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+pydantic==2.10.4
+pydantic-settings==2.7.0
+python-multipart==0.0.20
+
+# --- Persistence ---
+sqlalchemy==2.0.36
+alembic==1.14.0
+psycopg[binary]==3.2.3
+
+# --- Security ---
+argon2-cffi==23.1.0
+cryptography==44.0.0
+pyjwt==2.10.1
+pyotp==2.9.0
+qrcode==8.0
+
+# --- Support ---
+python-dateutil==2.9.0.post0
+email-validator==2.2.0
+httpx==0.28.1
+
+# --- Dev / test ---
+pytest==8.3.4
+pytest-cov==6.0.0
+ruff==0.8.6
