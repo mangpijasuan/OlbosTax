@@ -483,7 +483,6 @@ def efile_status(
     return_id: str,
     db: DbSession = Depends(get_db),
     user: CurrentUser = Depends(current_user),
-    settings: Settings = Depends(get_settings),
 ) -> dict:
     """Filing status per jurisdiction, in plain language."""
     try:

@@ -340,8 +340,12 @@ def finalize(
 
     if not computation.can_be_filed:
         reasons = [f.title for f in computation.blocking_findings]
-        if not computation.rule_sets_certified_for_filing:
-            reasons.append("tax rules for this year are not yet verified")
+        # An uncertified rule set already raises a per-jurisdiction finding, so
+        # a generic line is only added when nothing else has said it. Otherwise
+        # the taxpayer is told the same thing three times, which reads as a bug
+        # and buries any finding that is actually about their return.
+        if not computation.rule_sets_certified_for_filing and not reasons:
+            reasons.append("the tax rules for this year are not yet verified")
         raise ReturnImmutable(
             "this return cannot be marked ready for filing: " + "; ".join(reasons)
         )

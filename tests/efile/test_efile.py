@@ -8,6 +8,7 @@ than the happy path.
 """
 
 from datetime import UTC, datetime
+from decimal import Decimal
 
 import pytest
 from olbostax_efile import (
@@ -334,6 +335,42 @@ class TestValidation:
         for issue in result.issues:
             assert issue.taxpayer_message
             assert not issue.taxpayer_message.startswith("/")
+
+    def test_missing_bank_details_only_matter_when_a_refund_is_due(self, tax_return, computation):
+        """A taxpayer who owes money must not be blocked for having no deposit details.
+
+        Whether a missing destination matters depends on the computed result,
+        so the check belongs at level 3 where the computation is available. A
+        level-1 version would fire for everyone who left the default refund
+        method selected while owing tax.
+        """
+        tax_return.direct_deposit = None
+
+        owing = computation.model_copy(
+            update={
+                "federal": computation.federal.model_copy(
+                    update={"refund": Decimal("0"), "amount_owed": Decimal("450")}
+                )
+            }
+        )
+        result = MockEFileProvider().validate_return(
+            tax_return, owing, Jurisdiction.FEDERAL
+        )
+        assert "OT-REFUND-NO-DESTINATION" not in {i.code for i in result.errors}
+
+    def test_refund_with_nowhere_to_go_is_caught(self, tax_return, computation):
+        tax_return.direct_deposit = None
+        expecting = computation.model_copy(
+            update={
+                "federal": computation.federal.model_copy(
+                    update={"refund": Decimal("1200"), "amount_owed": Decimal("0")}
+                )
+            }
+        )
+        result = MockEFileProvider().validate_return(
+            tax_return, expecting, Jurisdiction.FEDERAL
+        )
+        assert "OT-REFUND-NO-DESTINATION" in {i.code for i in result.errors}
 
     def test_unimplemented_levels_are_declared(self):
         """The gap must be discoverable without reading the source."""
