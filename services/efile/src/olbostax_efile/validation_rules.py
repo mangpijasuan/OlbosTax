@@ -161,24 +161,12 @@ def _level_1_input(
             )
         seen[raw] = label
 
-    if tax_return.refund_method is RefundMethod.DIRECT_DEPOSIT:
-        needs_deposit = _expects_refund(tax_return, j)
-        if needs_deposit and tax_return.direct_deposit is None:
-            issues.append(
-                _issue(
-                    "OT-DEPOSIT-MISSING",
-                    j,
-                    "You chose direct deposit but have not given us your bank details.",
-                    "Add your routing and account numbers, or choose to receive a "
-                    "paper check instead.",
-                    field_path="direct_deposit",
-                )
-            )
+    # A missing direct deposit destination is deliberately *not* checked here.
+    # Whether it matters depends on whether a refund is actually due, and that
+    # needs the computation -- so the check lives in level 3, where the
+    # computed result is available. Flagging it at level 1 would block every
+    # taxpayer who owes money and left the default refund method selected.
     return issues
-
-
-def _expects_refund(tax_return: TaxReturnInput, j: Jurisdiction) -> bool:
-    return True  # refined by the caller using the computation
 
 
 def _level_2_tax(

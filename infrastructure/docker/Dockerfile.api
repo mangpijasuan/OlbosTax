@@ -1,4 +1,3 @@
-# syntax=docker/dockerfile:1
 
 # Multi-stage so the runtime image carries no build toolchain. A smaller image
 # is a smaller attack surface, and for a service holding taxpayer data that is

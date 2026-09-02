@@ -1,0 +1,42 @@
+# Keep the build context small and keep secrets out of images.
+#
+# Without this the context was 742MB, dominated by .venv and node_modules --
+# both of which are rebuilt inside the image anyway. More importantly, a
+# permissive context means a stray .env or key file can be copied into a layer,
+# where deleting it in a later layer does not remove it.
+
+.git
+.gitignore
+
+# Secrets -- never into an image layer
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets/
+
+# Rebuilt inside the image
+.venv/
+venv/
+**/node_modules/
+apps/web/.next/
+
+# Build and test artefacts
+**/__pycache__/
+**/*.py[cod]
+**/*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+htmlcov/
+.coverage
+coverage.xml
+
+# Not needed at runtime
+tests/
+docs/
+infrastructure/
+.github/
+*.md
+!README.md

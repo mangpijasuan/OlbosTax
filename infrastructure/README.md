@@ -69,6 +69,19 @@ retention must be reconciled with the deletion policy: honouring a deletion
 request while a backup still holds the data is a policy failure, and deleting a
 backup that holds legally required records is a different one.
 
+## Container images
+
+`Dockerfile.api` and `Dockerfile.web` are multi-stage, run as an unprivileged
+user, and carry a `.dockerignore` that keeps `.venv`, `node_modules` and every
+secret pattern out of the build context. A permissive context matters beyond
+build speed: a stray `.env` copied into a layer is not removed by deleting it
+in a later layer.
+
+**These images have not been built.** The environment this repository was
+developed in blocks Docker Hub base image pulls, so the Dockerfiles have been
+statically validated (stage references resolve, both run unprivileged) but not
+executed. Build them before relying on them.
+
 ## Deployment order
 
 1. Apply migrations with `olbostax_migrate`.
