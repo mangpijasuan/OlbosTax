@@ -67,7 +67,7 @@ def ok_return(
         taxpayer=Taxpayer(
             first_name="Okie", last_name="Resident", ssn="900-77-0001",
             date_of_birth=kwargs.pop("dob", date(1985, 5, 5)),
-            email="ok@example.invalid", address=ADDRESS,
+            email="ok@example.com", address=ADDRESS,
         ),
         income=income,
         files_oklahoma=True,

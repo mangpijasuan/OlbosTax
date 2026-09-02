@@ -91,7 +91,7 @@ def make_return(
             last_name="Person",
             ssn="900-00-0001",
             date_of_birth=dob,
-            email="t@example.invalid",
+            email="t@example.com",
             address=ADDRESS,
         ),
         income=income,
