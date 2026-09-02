@@ -193,7 +193,7 @@ class DirectDeposit(BaseModel):
     refund is the highest-value action an account takeover can perform.
     """
 
-    model_config = ConfigDict(extra="forbid")
+    model_config = ConfigDict(extra="forbid", validate_assignment=True)
 
     routing_number: RoutingNumber
     account_number: BankAccountNumber
