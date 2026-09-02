@@ -197,7 +197,11 @@ def _subtractions(
         total += allowed
         _step(
             trace, "OK_SUB_529", "Oklahoma 529 college savings contributions", allowed,
-            kind=StepKind.LIMITATION if allowed < ok.oklahoma_529_contributions else StepKind.SUBTOTAL,
+            kind=(
+                StepKind.LIMITATION
+                if allowed < ok.oklahoma_529_contributions
+                else StepKind.SUBTOTAL
+            ),
             form_line="Form 511, Schedule 511-B",
             inputs={"contributed": ok.oklahoma_529_contributions, "cap": cap},
             citation=citation,

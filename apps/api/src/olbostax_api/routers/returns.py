@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import UTC, datetime
+from datetime import datetime
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from olbostax_engine import CAPABILITY_MATRIX
@@ -13,9 +13,9 @@ from sqlalchemy.orm import Session as DbSession
 from ..database import get_db
 from ..dependencies import CurrentUser, client_ip, current_user, require_mfa
 from ..models import Taxpayer
-from ..services import audit, returns as returns_service
+from ..services import audit
+from ..services import returns as returns_service
 from ..services.crypto import decrypt_return_input
-from ..settings import Settings, get_settings
 
 router = APIRouter(prefix="/api/v1/returns", tags=["returns"])
 

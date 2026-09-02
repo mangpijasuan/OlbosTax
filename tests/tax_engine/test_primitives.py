@@ -9,7 +9,6 @@ calculation is far harder than catching it here.
 from decimal import Decimal
 
 import pytest
-
 from olbostax_engine.calculations import (
     apply_bracket_schedule,
     marginal_rate,

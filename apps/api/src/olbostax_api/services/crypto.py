@@ -171,12 +171,12 @@ def _to_jsonable(value: Any) -> Any:
 
     if isinstance(value, dict):
         return {key: _to_jsonable(item) for key, item in value.items()}
-    if isinstance(value, (list, tuple)):
+    if isinstance(value, list | tuple):
         return [_to_jsonable(item) for item in value]
     if isinstance(value, Decimal):
         return str(value)
     if isinstance(value, Enum):
         return value.value
-    if isinstance(value, (date, datetime)):
+    if isinstance(value, date | datetime):
         return value.isoformat()
     return value

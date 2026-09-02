@@ -193,12 +193,12 @@ def _jsonable(value):
 
     if isinstance(value, dict):
         return {k: _jsonable(v) for k, v in value.items()}
-    if isinstance(value, (list, tuple)):
+    if isinstance(value, list | tuple):
         return [_jsonable(v) for v in value]
     if isinstance(value, D):
         return str(value)
     if isinstance(value, Enum):
         return value.value
-    if isinstance(value, (date, datetime)):
+    if isinstance(value, date | datetime):
         return value.isoformat()
     return value

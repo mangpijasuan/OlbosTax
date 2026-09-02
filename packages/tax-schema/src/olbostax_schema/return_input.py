@@ -16,13 +16,13 @@ from typing import Annotated
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from .documents import (
+    W2,
     Form1099DIV,
     Form1099G,
     Form1099INT,
     Form1099MISC,
     Form1099NEC,
     Form1099R,
-    W2,
 )
 from .enums import AccountType, FilingStatus, RefundMethod, ResidencyStatus
 from .money import ZERO

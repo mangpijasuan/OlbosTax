@@ -11,7 +11,6 @@ from datetime import date
 from decimal import Decimal
 
 import pytest
-
 from olbostax_engine import TaxEngine, load_rule_set
 from olbostax_schema import (
     W2,
@@ -21,8 +20,8 @@ from olbostax_schema import (
     IncomeSection,
     OklahomaSection,
     ResidencyStatus,
-    TaxReturnInput,
     Taxpayer,
+    TaxReturnInput,
 )
 
 D = Decimal

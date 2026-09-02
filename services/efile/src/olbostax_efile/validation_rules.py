@@ -17,7 +17,6 @@ up in the compliance status rather than being forgotten.
 
 from __future__ import annotations
 
-import re
 from datetime import date
 from decimal import Decimal
 
@@ -47,6 +46,7 @@ _BAD_AREA = frozenset({"000", "666"})
 _ITIN_GROUPS = frozenset(
     {f"{n:02d}" for n in (*range(50, 66), *range(70, 89), *range(90, 93), *range(94, 100))}
 )
+
 
 # Identifiers reserved for synthetic test data. Area 9xx with a group outside
 # every ITIN range is issued by nobody -- not as an SSN, not as an ITIN -- so
@@ -197,17 +197,19 @@ def _level_2_tax(
             )
         )
 
-    if tax_return.filing_status is FilingStatus.QUALIFYING_SURVIVING_SPOUSE:
-        if not tax_return.dependents:
-            issues.append(
-                _issue(
-                    "OT-QSS-NO-DEPENDENT",
-                    j,
-                    "Qualifying surviving spouse status requires a dependent child.",
-                    "If you do not have a dependent child living with you, your filing "
-                    "status is probably single or head of household.",
-                )
+    if (
+        tax_return.filing_status is FilingStatus.QUALIFYING_SURVIVING_SPOUSE
+        and not tax_return.dependents
+    ):
+        issues.append(
+            _issue(
+                "OT-QSS-NO-DEPENDENT",
+                j,
+                "Qualifying surviving spouse status requires a dependent child.",
+                "If you do not have a dependent child living with you, your filing "
+                "status is probably single or head of household.",
             )
+        )
 
     for dependent in tax_return.dependents:
         if dependent.date_of_birth > tax_return.year_end:
@@ -275,8 +277,7 @@ def _level_3_cross_form(
                     j,
                     f"On your W-2 from {label}, the federal tax withheld is more than "
                     "the wages.",
-                    "Check boxes 1 and 2. They may have been entered the wrong way "
-                    "around.",
+                    "Check boxes 1 and 2. They may have been entered the wrong way " "around.",
                     field_path=f"income.w2s[{index - 1}]",
                 )
             )

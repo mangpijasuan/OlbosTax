@@ -9,7 +9,6 @@ import logging
 from io import StringIO
 
 import pytest
-
 from olbostax_security import (
     REDACTED,
     DecryptionError,
@@ -271,8 +270,9 @@ class TestSessions:
             manager.verify(forged)
 
     def test_expired_token_rejected(self, manager):
-        import jwt
         from datetime import timedelta
+
+        import jwt
 
         short = SessionManager("x" * 48, access_ttl=timedelta(seconds=-1))
         with pytest.raises(jwt.ExpiredSignatureError):

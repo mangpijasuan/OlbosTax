@@ -15,7 +15,6 @@ from olbostax_schema import Jurisdiction, StepKind, TaxReturnInput, TraceStep
 from olbostax_schema.money import ZERO, clamp_non_negative
 from olbostax_schema.trace import CalculationTrace
 
-from ..calculations import phase_out_ratably
 from ..rules import RuleSet
 
 __all__ = ["DeductionResult", "calculate_deduction", "count_aged_or_blind", "senior_deduction"]
@@ -165,7 +164,11 @@ def senior_deduction(
             rule_citation=rules.citation("senior_deduction"),
             detail=(
                 f"An extra deduction of ${per:,.0f} per person aged 65 or older."
-                + (f" Reduced because your income is above ${phase_start:,.0f}." if allowed < gross else "")
+                + (
+                    f" Reduced because your income is above ${phase_start:,.0f}."
+                    if allowed < gross
+                    else ""
+                )
             ),
         )
     )

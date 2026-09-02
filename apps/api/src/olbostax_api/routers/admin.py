@@ -24,8 +24,8 @@ from ..models import (
     Payment,
     RuleSetApproval,
     SecurityEvent,
-    TaxReturn,
     Taxpayer,
+    TaxReturn,
     User,
 )
 from ..services import audit

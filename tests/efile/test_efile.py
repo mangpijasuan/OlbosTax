@@ -10,7 +10,6 @@ than the happy path.
 from datetime import UTC, datetime
 
 import pytest
-
 from olbostax_efile import (
     Acknowledgment,
     EFileError,
@@ -26,6 +25,7 @@ from olbostax_efile import (
 )
 from olbostax_engine import compute
 from olbostax_schema import Jurisdiction
+
 from tests.fixtures.synthetic_taxpayers import synthetic_taxpayer_001
 
 

@@ -1,0 +1,53 @@
+# Local development only.
+#
+# This file is not a production deployment. The credentials are throwaway, the
+# database is not backed up, and there is no TLS termination. Production
+# configuration comes from the platform's secret manager, and OLBOSTAX_ENV
+# there is "production", which makes the API refuse to start with any of the
+# defaults below.
+
+name: olbostax
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: olbostax
+      POSTGRES_PASSWORD: olbostax
+      POSTGRES_DB: olbostax
+    ports: ["5432:5432"]
+    volumes: ["olbostax-db:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U olbostax"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build:
+      context: ../..
+      dockerfile: infrastructure/docker/Dockerfile.api
+    environment:
+      OLBOSTAX_ENV: development
+      DATABASE_URL: postgresql+psycopg://olbostax:olbostax@db:5432/olbostax
+      OLBOSTAX_EFILE_PROVIDER: mock
+      OLBOSTAX_PAYMENT_PROVIDER: mock
+      OLBOSTAX_CORS_ORIGINS: '["http://localhost:3000"]'
+    ports: ["8000:8000"]
+    depends_on:
+      db: { condition: service_healthy }
+    command: >
+      sh -c "alembic upgrade head &&
+             uvicorn olbostax_api.app:app --host 0.0.0.0 --port 8000"
+
+  web:
+    build:
+      context: ../..
+      dockerfile: infrastructure/docker/Dockerfile.web
+      args:
+        NEXT_PUBLIC_API_BASE_URL: http://localhost:8000
+    ports: ["3000:3000"]
+    depends_on: [api]
+
+volumes:
+  olbostax-db:

@@ -108,7 +108,10 @@ class Dependent(Person):
     claimed_by_another_taxpayer: bool = False
     has_valid_ssn_for_employment: bool = Field(
         default=True,
-        description="Child Tax Credit requires an SSN valid for employment; an ITIN does not qualify",
+        description=(
+            "Child Tax Credit requires an SSN valid for employment; "
+            "an ITIN does not qualify"
+        ),
     )
     is_disabled_and_needs_care: bool = False
     child_care_expenses_paid: bool = False

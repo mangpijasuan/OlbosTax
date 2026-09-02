@@ -35,7 +35,7 @@ class _RoundedResult(BaseModel):
     """
 
     @model_validator(mode="after")
-    def _quantize_money_fields(self) -> "_RoundedResult":
+    def _quantize_money_fields(self) -> _RoundedResult:
         for name, field in type(self).model_fields.items():
             if field.annotation is not Decimal:
                 continue

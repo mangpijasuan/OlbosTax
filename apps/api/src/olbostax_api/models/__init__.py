@@ -17,9 +17,9 @@ from .tables import (
     SupportCase,
     TaxCalculation,
     TaxDocument,
+    Taxpayer,
     TaxReturn,
     TaxReturnVersion,
-    Taxpayer,
     User,
 )
 

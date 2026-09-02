@@ -16,9 +16,14 @@ from fastapi.testclient import TestClient
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
 
-DATABASE_URL = os.environ.get(
-    "OLBOSTAX_TEST_DATABASE_URL",
-    "postgresql+psycopg://olbostax:olbostax@127.0.0.1:5433/olbostax",
+# `or` rather than a get() default: an environment variable set to the empty
+# string is a value as far as os.environ is concerned, so a shell that exports
+# an unset variable silently blanks the URL -- and the whole integration suite
+# then skips while reporting a connection failure to nowhere. Skipping quietly
+# is the worst failure mode for a test suite whose job is to catch regressions.
+DATABASE_URL = (
+    os.environ.get("OLBOSTAX_TEST_DATABASE_URL")
+    or "postgresql+psycopg://olbostax:olbostax@127.0.0.1:5433/olbostax"
 )
 
 

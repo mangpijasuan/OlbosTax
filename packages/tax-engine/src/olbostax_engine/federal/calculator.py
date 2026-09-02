@@ -40,8 +40,8 @@ from . import credits as credits_mod
 from . import income as income_mod
 from . import se_tax as se_mod
 from . import tax as tax_mod
-from .dependents import DependentStatus
 from .deductions import calculate_deduction
+from .dependents import DependentStatus
 
 __all__ = ["calculate_federal_return"]
 

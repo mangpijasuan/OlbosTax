@@ -29,9 +29,8 @@ import abc
 from datetime import UTC, datetime
 from enum import Enum
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
-
 from olbostax_schema import Jurisdiction, TaxComputation, TaxReturnInput
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 __all__ = [
     "TransmissionChannel",

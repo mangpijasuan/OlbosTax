@@ -31,7 +31,8 @@ from ..models import (
     Payment,
     Signature,
 )
-from ..services import audit, returns as returns_service
+from ..services import audit
+from ..services import returns as returns_service
 from ..services.crypto import decrypt_return_input
 from ..settings import Settings, get_settings
 
@@ -497,7 +498,10 @@ def efile_status(
         select(EFileSubmission).where(EFileSubmission.tax_return_version_id == version.id)
     ).scalars()
 
-    provider = get_provider(settings.efile_provider)
+    # Status is read from stored acknowledgments rather than by polling the
+    # provider: the acknowledgment row is the record of what the authority
+    # actually said, and a status endpoint that re-derives it from a live call
+    # can disagree with the record it is supposed to be reporting.
     result = []
     for submission in submissions:
         acknowledgment = db.execute(

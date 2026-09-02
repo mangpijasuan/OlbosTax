@@ -69,6 +69,18 @@ class Settings(BaseSettings):
         return f"${dollars}.{cents:02d}"
 
     @model_validator(mode="after")
+    def _database_url_must_be_present(self) -> Settings:
+        """Reject an empty database URL in every environment.
+
+        An environment variable exported as the empty string is a value, not an
+        absence, so pydantic accepts it and the failure surfaces later as an
+        obscure driver error. Failing here names the actual problem.
+        """
+        if not self.database_url.strip():
+            raise ValueError("DATABASE_URL is empty; set it or leave it unset")
+        return self
+
+    @model_validator(mode="after")
     def _production_requires_real_configuration(self) -> Settings:
         if not self.is_production:
             return self

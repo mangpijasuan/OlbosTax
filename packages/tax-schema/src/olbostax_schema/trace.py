@@ -119,4 +119,5 @@ class CalculationTrace(BaseModel):
         not like a spreadsheet dump.
         """
         steps = self.steps if jurisdiction is None else self.for_jurisdiction(jurisdiction)
-        return [s for s in steps if s.kind in (StepKind.RESULT, StepKind.LIMITATION, StepKind.SUBTOTAL)]
+        shown = (StepKind.RESULT, StepKind.LIMITATION, StepKind.SUBTOTAL)
+        return [s for s in steps if s.kind in shown]

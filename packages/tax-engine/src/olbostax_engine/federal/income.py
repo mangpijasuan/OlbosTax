@@ -432,6 +432,9 @@ def total_income(
         total,
         kind=StepKind.RESULT,
         form_line="Form 1040, line 9",
-        inputs={"income_other_than_social_security": non_ss, "taxable_social_security": social_security},
+        inputs={
+            "income_other_than_social_security": non_ss,
+            "taxable_social_security": social_security,
+        },
     )
     return total, long_term
