@@ -1,0 +1,466 @@
+/* ==========================================================================
+   OlbosTax design system
+
+   The brief asks for professional, modern, trustworthy, financial, minimal
+   and friendly -- and explicitly not government-looking. The choices that
+   follow from that:
+
+   - A deep teal as the primary. Blue is the default for fintech and is also
+     what every government tax site uses; teal reads as considered and
+     financial without the .gov association.
+   - Generous type sizes and line height. People do their taxes tired, on a
+     phone, at 11pm. Small dense type is a legibility failure before it is an
+     aesthetic one.
+   - A single accent for money. Refund figures are the number a person is
+     looking for; nothing else competes for that colour.
+
+   Accessibility (WCAG 2.2 AA) is a constraint on the palette, not a pass
+   afterwards: every foreground/background pair used for text meets 4.5:1,
+   and every interactive control has a visible focus ring that is not the
+   browser default.
+   ========================================================================== */
+
+:root {
+  --ink-900: #0d1b1e;
+  --ink-700: #24383c;
+  --ink-500: #4a6268;
+  --ink-300: #7d949a;
+  --ink-100: #d5e0e2;
+  --ink-050: #eef3f4;
+
+  --paper: #ffffff;
+  --paper-warm: #fbfaf7;
+
+  --teal-700: #0a5c60;
+  --teal-600: #0d7377;
+  --teal-500: #14919b;
+  --teal-100: #d6eef0;
+  --teal-050: #eff8f9;
+
+  --money: #146c43;
+  --money-soft: #e6f4ec;
+  --owed: #9a3412;
+  --owed-soft: #fdf0e7;
+  --warn: #8a6100;
+  --warn-soft: #fdf6e3;
+  --danger: #a01b2b;
+  --danger-soft: #fdeced;
+
+  --radius-sm: 6px;
+  --radius: 10px;
+  --radius-lg: 16px;
+
+  --shadow-sm: 0 1px 2px rgba(13, 27, 30, 0.06), 0 1px 3px rgba(13, 27, 30, 0.08);
+  --shadow: 0 4px 6px -1px rgba(13, 27, 30, 0.08), 0 2px 4px -2px rgba(13, 27, 30, 0.06);
+  --shadow-lg: 0 12px 24px -8px rgba(13, 27, 30, 0.14);
+
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --measure: 68ch;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--ink-900);
+  background: var(--paper);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.5em;
+  font-weight: 640;
+}
+
+h1 { font-size: clamp(2.1rem, 5.5vw, 3.5rem); }
+h2 { font-size: clamp(1.5rem, 3.5vw, 2.15rem); }
+h3 { font-size: 1.2rem; }
+
+p { margin: 0 0 1em; max-width: var(--measure); }
+
+a { color: var(--teal-700); }
+
+/* A visible, high-contrast focus ring on every interactive element. The
+   browser default disappears against a teal button, and a keyboard user who
+   cannot see where they are cannot complete a tax return. */
+:focus-visible {
+  outline: 3px solid var(--teal-600);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Respect a user's motion preference rather than animating regardless. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.shell {
+  width: min(1120px, 100% - 2.5rem);
+  margin-inline: auto;
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  background: var(--teal-700);
+  color: white;
+  padding: 0.75rem 1.25rem;
+  z-index: 100;
+}
+.skip-link:focus {
+  left: 0.5rem;
+  top: 0.5rem;
+}
+
+/* --- Buttons ------------------------------------------------------------ */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  /* 52px tall: comfortably above the 44px minimum touch target, because this
+     is a mobile-first product and thumbs are imprecise. */
+  min-height: 52px;
+  padding: 0.85rem 1.6rem;
+  border-radius: var(--radius);
+  border: 1.5px solid transparent;
+  font: inherit;
+  font-weight: 600;
+  font-size: 1.02rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.05s ease;
+}
+.btn:active { transform: translateY(1px); }
+
+.btn--primary {
+  background: var(--teal-700);
+  color: #fff;
+}
+.btn--primary:hover { background: var(--teal-600); }
+
+.btn--secondary {
+  background: var(--paper);
+  color: var(--teal-700);
+  border-color: var(--ink-100);
+}
+.btn--secondary:hover { border-color: var(--teal-500); background: var(--teal-050); }
+
+.btn--ghost {
+  background: transparent;
+  color: var(--ink-700);
+  min-height: 44px;
+  padding: 0.5rem 0.9rem;
+}
+.btn--ghost:hover { background: var(--ink-050); }
+
+.btn[disabled], .btn[aria-disabled="true"] {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btn--block { width: 100%; }
+
+/* --- Cards and surfaces ------------------------------------------------- */
+
+.card {
+  background: var(--paper);
+  border: 1px solid var(--ink-100);
+  border-radius: var(--radius-lg);
+  padding: 1.6rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.card--flush { padding: 0; overflow: hidden; }
+
+/* --- Notices ------------------------------------------------------------ */
+
+.notice {
+  display: flex;
+  gap: 0.9rem;
+  padding: 1.1rem 1.25rem;
+  border-radius: var(--radius);
+  border: 1px solid;
+  margin-block: 1.25rem;
+  max-width: var(--measure);
+}
+.notice__icon { flex: none; font-size: 1.2rem; line-height: 1.4; }
+.notice__body { min-width: 0; }
+.notice__title { font-weight: 640; margin: 0 0 0.25rem; }
+.notice p { margin: 0 0 0.4rem; }
+.notice p:last-child { margin-bottom: 0; }
+
+.notice--info { background: var(--teal-050); border-color: var(--teal-100); color: var(--ink-900); }
+.notice--warn { background: var(--warn-soft); border-color: #e7d39a; color: #4a3600; }
+.notice--danger { background: var(--danger-soft); border-color: #f0bcc2; color: #6b0f1c; }
+.notice--success { background: var(--money-soft); border-color: #b7dcc6; color: #0d4a2e; }
+
+/* --- Money -------------------------------------------------------------- */
+
+.money {
+  font-variant-numeric: tabular-nums;
+  font-weight: 660;
+  letter-spacing: -0.01em;
+}
+.money--refund { color: var(--money); }
+.money--owed { color: var(--owed); }
+.money--xl { font-size: clamp(2.2rem, 6vw, 3rem); }
+.money--lg { font-size: 1.6rem; }
+
+/* --- Forms -------------------------------------------------------------- */
+
+.field { margin-bottom: 1.5rem; max-width: 34rem; }
+
+.field__label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.35rem;
+}
+
+.field__hint {
+  display: block;
+  color: var(--ink-500);
+  font-size: 0.94rem;
+  margin-bottom: 0.5rem;
+  max-width: var(--measure);
+}
+
+.field__error {
+  display: block;
+  color: var(--danger);
+  font-size: 0.94rem;
+  margin-top: 0.4rem;
+  font-weight: 500;
+}
+
+.input {
+  width: 100%;
+  min-height: 52px;
+  padding: 0.7rem 0.9rem;
+  font: inherit;
+  font-size: 1.05rem;
+  color: var(--ink-900);
+  background: var(--paper);
+  border: 1.5px solid var(--ink-300);
+  border-radius: var(--radius);
+}
+.input:hover { border-color: var(--ink-500); }
+.input[aria-invalid="true"] { border-color: var(--danger); }
+
+.input--money {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.input-group { display: flex; align-items: stretch; }
+.input-group__prefix {
+  display: flex;
+  align-items: center;
+  padding: 0 0.85rem;
+  background: var(--ink-050);
+  border: 1.5px solid var(--ink-300);
+  border-right: none;
+  border-radius: var(--radius) 0 0 var(--radius);
+  color: var(--ink-700);
+  font-weight: 600;
+}
+.input-group .input { border-radius: 0 var(--radius) var(--radius) 0; }
+
+/* --- Progress ----------------------------------------------------------- */
+
+.stepper {
+  display: flex;
+  gap: 0.4rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.stepper::-webkit-scrollbar { display: none; }
+
+.stepper__step {
+  flex: 1 0 auto;
+  min-width: 5.5rem;
+  padding: 0.55rem 0.2rem 0;
+  border-top: 4px solid var(--ink-100);
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--ink-300);
+  white-space: nowrap;
+}
+.stepper__step[data-state="done"] { border-top-color: var(--teal-500); color: var(--ink-500); }
+.stepper__step[data-state="current"] { border-top-color: var(--teal-700); color: var(--teal-700); }
+
+/* --- Utilities ---------------------------------------------------------- */
+
+.stack > * + * { margin-top: var(--stack-gap, 1rem); }
+.muted { color: var(--ink-500); }
+.small { font-size: 0.94rem; }
+.center { text-align: center; }
+.visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* --- Site header -------------------------------------------------------- */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--paper);
+  border-bottom: 1px solid var(--ink-100);
+}
+
+.site-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 72px;
+}
+
+.site-header__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+  color: var(--ink-900);
+  font-weight: 700;
+  font-size: 1.2rem;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+.site-header__nav {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.site-header__nav .btn {
+  white-space: nowrap;
+}
+
+/* Below 640px the secondary links are dropped rather than wrapped. Wrapping
+   them turned "How it works" into three stacked words and pushed the primary
+   action off the edge of the screen -- on a mobile-first product, the one
+   control that must always be reachable is the one that starts a return. The
+   dropped links remain in the footer, which is where a phone user looks for
+   them anyway. */
+@media (max-width: 40rem) {
+  .site-header__nav .site-header__secondary {
+    display: none;
+  }
+  .site-header__inner {
+    min-height: 64px;
+  }
+}
+
+/* --- Hero --------------------------------------------------------------- */
+
+.hero {
+  background: linear-gradient(170deg, var(--teal-050) 0%, var(--paper) 62%);
+  padding-block: clamp(2.5rem, 7vw, 5rem);
+}
+
+.hero__grid {
+  display: grid;
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: center;
+}
+
+/* The preview panel appears only when there is room for it to be an aid
+   rather than a delay: on a phone it would push the primary action below the
+   fold, which is the opposite of what it is for. */
+@media (min-width: 60rem) {
+  .hero__grid {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  }
+}
+
+.hero__preview {
+  display: none;
+}
+
+@media (min-width: 60rem) {
+  .hero__preview {
+    display: block;
+  }
+}
+
+.preview-card {
+  background: var(--paper);
+  border: 1px solid var(--ink-100);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+.preview-card__bar {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.7rem 1rem;
+  background: var(--ink-050);
+  border-bottom: 1px solid var(--ink-100);
+}
+
+.preview-card__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--ink-100);
+}
+
+.preview-card__body {
+  padding: 1.5rem;
+}
+
+.preview-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-block: 0.55rem;
+  border-bottom: 1px solid var(--ink-050);
+}
+
+.preview-row:last-of-type {
+  border-bottom: 0;
+}
+
+/* --- Trust strip -------------------------------------------------------- */
+
+.trust-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 195px), 1fr));
+}

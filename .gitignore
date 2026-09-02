@@ -41,3 +41,7 @@ tmp/
 # Taxpayer data must never be committed
 **/taxpayer_data/
 **/real_returns/
+
+# Web build output
+apps/web/.next/
+apps/web/node_modules/
