@@ -129,12 +129,15 @@ def classify_dependent(
         and age <= ctc_max_age
         and (dependent.has_valid_ssn_for_employment or not needs_work_ssn)
     )
-    if is_qualifying_child and age <= ctc_max_age and needs_work_ssn:
-        if not dependent.has_valid_ssn_for_employment:
-            reasons.append(
-                "does not have an SSN valid for employment, which the Child Tax "
-                "Credit requires"
-            )
+    if (
+        is_qualifying_child
+        and age <= ctc_max_age
+        and needs_work_ssn
+        and not dependent.has_valid_ssn_for_employment
+    ):
+        reasons.append(
+            "does not have an SSN valid for employment, which the Child Tax " "Credit requires"
+        )
 
     # A dependent who fails the CTC only because of the SSN requirement still
     # qualifies for the $500 Credit for Other Dependents.
@@ -170,9 +173,7 @@ def classify_dependent(
     )
 
 
-def classify_dependents(
-    tax_return: TaxReturnInput, rules: RuleSet
-) -> list[DependentStatus]:
+def classify_dependents(tax_return: TaxReturnInput, rules: RuleSet) -> list[DependentStatus]:
     return [classify_dependent(d, tax_return, rules) for d in tax_return.dependents]
 
 

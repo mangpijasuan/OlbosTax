@@ -8,6 +8,16 @@ the engine, the API, the validators and the e-file serializers evolve
 independently.
 """
 
+from .documents import (
+    W2,
+    Form1099DIV,
+    Form1099G,
+    Form1099INT,
+    Form1099MISC,
+    Form1099NEC,
+    Form1099R,
+    W2Box12Entry,
+)
 from .enums import (
     AccountType,
     CapabilityLevel,
@@ -18,16 +28,6 @@ from .enums import (
     RefundMethod,
     ResidencyStatus,
     ReturnStatus,
-)
-from .documents import (
-    Form1099DIV,
-    Form1099G,
-    Form1099INT,
-    Form1099MISC,
-    Form1099NEC,
-    Form1099R,
-    W2,
-    W2Box12Entry,
 )
 from .money import ZERO, Money, clamp_non_negative, money, to_cents, to_whole_dollars
 from .provenance import ExtractedValue, Provenance, ValueSource

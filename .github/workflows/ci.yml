@@ -1,0 +1,106 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  python:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: olbostax
+          POSTGRES_PASSWORD: olbostax
+          POSTGRES_DB: olbostax
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      DATABASE_URL: postgresql+psycopg://olbostax:olbostax@localhost:5432/olbostax
+      OLBOSTAX_TEST_DATABASE_URL: postgresql+psycopg://olbostax:olbostax@localhost:5432/olbostax
+      OLBOSTAX_ENV: test
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install
+        run: |
+          pip install -r requirements.txt
+          pip install -e packages/tax-schema -e packages/tax-engine \
+                      -e packages/security -e services/efile -e apps/api
+
+      - name: Lint
+        run: ruff check .
+
+      - name: Migrations apply and round-trip
+        working-directory: apps/api
+        run: |
+          alembic upgrade head
+          alembic downgrade base
+          alembic upgrade head
+          # Fails if the models have drifted from the migrations, which is how
+          # a schema change reaches production without a migration.
+          alembic check
+
+      - name: Tests
+        run: pytest tests/ -q
+
+      - name: Tax rule certification report
+        # Informational, and deliberately loud. Nobody should be able to say
+        # they did not know the rule sets were uncertified.
+        run: |
+          python - <<'PY'
+          from olbostax_engine import available_rule_sets
+          uncertified = [
+              f"{j}/{y} is {c.value}"
+              for j, y, c in available_rule_sets()
+              if not c.is_filable
+          ]
+          if uncertified:
+              print("::warning::Rule sets not certified for filing: " + "; ".join(uncertified))
+          else:
+              print("All rule sets are certified for filing.")
+          PY
+
+      - name: No plaintext identifiers in serialized output
+        # A focused re-run of the checks that would turn a logging or storage
+        # regression into a disclosure.
+        run: pytest tests/api/test_crypto_roundtrip.py tests/security -q
+
+  web:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: npm install
+      - run: npx tsc --noEmit
+      - run: npm run build
+
+  secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Scan history for committed secrets
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

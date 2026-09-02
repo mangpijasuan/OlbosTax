@@ -24,8 +24,22 @@ select = ["E", "F", "I", "B", "UP", "S", "C4", "SIM"]
 ignore = ["S101"]
 
 [tool.ruff.lint.per-file-ignores]
+# Test code asserts on invented credentials and long fixture literals.
 "**/tests/**" = ["S", "E501"]
 "tests/**" = ["S", "E501"]
+
+# Alembic autogenerates these. Holding machine-written code to a hand-written
+# line limit means either reformatting every generated migration by hand or
+# ignoring the warning -- and a warning that is routinely ignored stops being
+# read at all.
+"apps/api/migrations/versions/*.py" = ["E501"]
+
+# FastAPI's dependency injection is expressed as call-in-default-argument.
+# B008 exists to catch mutable defaults evaluated once at import; here the
+# call IS the declaration the framework reads, and rewriting it would mean
+# abandoning dependency injection.
+"apps/api/src/olbostax_api/routers/*.py" = ["B008"]
+"apps/api/src/olbostax_api/dependencies.py" = ["B008"]
 
 [tool.mypy]
 python_version = "3.11"

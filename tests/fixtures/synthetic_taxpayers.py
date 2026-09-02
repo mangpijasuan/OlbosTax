@@ -26,7 +26,6 @@ from olbostax_schema import (
     W2,
     Address,
     CreditsSection,
-    DeductionsSection,
     Dependent,
     DependentRelationship,
     DirectDeposit,
@@ -38,10 +37,9 @@ from olbostax_schema import (
     Form1099R,
     IncomeSection,
     OklahomaSection,
-    PaymentsSection,
     Spouse,
-    TaxReturnInput,
     Taxpayer,
+    TaxReturnInput,
 )
 from olbostax_schema.enums import AccountType
 

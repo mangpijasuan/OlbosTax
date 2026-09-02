@@ -43,7 +43,7 @@ class RuleLookupError(KeyError):
 class RuleSource(BaseModel):
     """Provenance for a group of rule values -- spec section 41."""
 
-    model_config = ConfigDict(extra="forbid")
+    model_config = ConfigDict(extra="forbid", frozen=True)
 
     id: str
     authority: str = Field(description='e.g. "Internal Revenue Service"')
@@ -57,7 +57,18 @@ class RuleSource(BaseModel):
 
 
 class RuleSetMeta(BaseModel):
-    model_config = ConfigDict(extra="forbid")
+    """Identity and certification state of a rule set.
+
+    Frozen, and deliberately so. ``load_rule_set`` caches, so every caller in
+    the process shares one instance -- and ``certification`` is what the e-file
+    layer consults before allowing a return to be transmitted. If this were
+    mutable, any code holding a reference could flip a DRAFT rule set to
+    PRODUCTION for the lifetime of the process, and every subsequent return
+    would be reported as filable. Freezing the container without freezing this
+    would leave the gate open through the back door.
+    """
+
+    model_config = ConfigDict(extra="forbid", frozen=True)
 
     jurisdiction: str
     tax_year: int

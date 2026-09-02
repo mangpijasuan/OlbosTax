@@ -19,9 +19,9 @@ the new baseline is committed.
 from decimal import Decimal
 
 import pytest
-
 from olbostax_engine import compute
 from olbostax_schema.money import to_cents
+
 from tests.fixtures.synthetic_taxpayers import ALL_SYNTHETIC_TAXPAYERS
 
 D = Decimal

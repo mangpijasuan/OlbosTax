@@ -51,7 +51,6 @@ CAPABILITY_MATRIX: dict[str, tuple[CapabilityLevel, str]] = {
     "credit.child_care": (CapabilityLevel.SUPPORTED, "Child and Dependent Care Credit"),
     "credit.education": (CapabilityLevel.SUPPORTED, "Education credits"),
     "state.oklahoma_resident": (CapabilityLevel.SUPPORTED, "Oklahoma full-year resident"),
-
     # -- Partially supported ------------------------------------------------
     "income.self_employment": (
         CapabilityLevel.PARTIALLY_SUPPORTED,
@@ -65,23 +64,31 @@ CAPABILITY_MATRIX: dict[str, tuple[CapabilityLevel, str]] = {
         CapabilityLevel.PARTIALLY_SUPPORTED,
         "Qualified business income deduction below the income threshold only",
     ),
-
     # -- Not supported ------------------------------------------------------
     "state.multi_state": (CapabilityLevel.NOT_SUPPORTED, "More than one state return"),
     "state.oklahoma_part_year": (
-        CapabilityLevel.NOT_SUPPORTED, "Oklahoma part-year resident or nonresident (Form 511-NR)"
+        CapabilityLevel.NOT_SUPPORTED,
+        "Oklahoma part-year resident or nonresident (Form 511-NR)",
     ),
     "income.rental": (CapabilityLevel.NOT_SUPPORTED, "Rental real estate (Schedule E)"),
-    "income.k1": (CapabilityLevel.NOT_SUPPORTED, "Partnership or S-corporation income (Schedule K-1)"),
+    "income.k1": (
+        CapabilityLevel.NOT_SUPPORTED,
+        "Partnership or S-corporation income (Schedule K-1)",
+    ),
     "income.farm": (CapabilityLevel.NOT_SUPPORTED, "Farm income (Schedule F)"),
-    "income.foreign": (CapabilityLevel.REQUIRES_TAX_PROFESSIONAL, "Foreign income or foreign accounts"),
+    "income.foreign": (
+        CapabilityLevel.REQUIRES_TAX_PROFESSIONAL,
+        "Foreign income or foreign accounts",
+    ),
     "income.crypto": (CapabilityLevel.NOT_SUPPORTED, "Digital asset transactions"),
     "status.amended": (CapabilityLevel.NOT_SUPPORTED, "Amended returns (Form 1040-X)"),
     "status.nonresident_alien": (
-        CapabilityLevel.REQUIRES_TAX_PROFESSIONAL, "Nonresident alien returns (Form 1040-NR)"
+        CapabilityLevel.REQUIRES_TAX_PROFESSIONAL,
+        "Nonresident alien returns (Form 1040-NR)",
     ),
     "credit.premium_tax": (
-        CapabilityLevel.NOT_SUPPORTED, "Premium Tax Credit / Marketplace insurance (Form 1095-A)"
+        CapabilityLevel.NOT_SUPPORTED,
+        "Premium Tax Credit / Marketplace insurance (Form 1095-A)",
     ),
     "tax.amt": (CapabilityLevel.NOT_SUPPORTED, "Alternative Minimum Tax (Form 6251)"),
     "income.tips_overtime_deduction": (
@@ -127,20 +134,22 @@ def assess_capability(
             )
 
     # -- Residency ----------------------------------------------------------
-    if tax_return.files_oklahoma:
-        if tax_return.oklahoma.residency is not ResidencyStatus.FULL_YEAR_RESIDENT:
-            findings.append(
-                _finding(
-                    "state.oklahoma_part_year",
-                    CapabilityLevel.NOT_SUPPORTED,
-                    "Part-year and nonresident Oklahoma returns are not supported yet",
-                    "You told us you were not an Oklahoma resident for the whole year. "
-                    "That return (Form 511-NR) requires dividing your income between "
-                    "Oklahoma and the states you lived in, which OlbosTax cannot do yet.",
-                    "You can still file your federal return with us. For Oklahoma you "
-                    "will need a preparer who handles part-year returns.",
-                )
+    if (
+        tax_return.files_oklahoma
+        and tax_return.oklahoma.residency is not ResidencyStatus.FULL_YEAR_RESIDENT
+    ):
+        findings.append(
+            _finding(
+                "state.oklahoma_part_year",
+                CapabilityLevel.NOT_SUPPORTED,
+                "Part-year and nonresident Oklahoma returns are not supported yet",
+                "You told us you were not an Oklahoma resident for the whole year. "
+                "That return (Form 511-NR) requires dividing your income between "
+                "Oklahoma and the states you lived in, which OlbosTax cannot do yet.",
+                "You can still file your federal return with us. For Oklahoma you "
+                "will need a preparer who handles part-year returns.",
             )
+        )
 
     # A W-2 with state wages for a state other than Oklahoma means a second
     # state return is likely required, and OlbosTax files only one.
@@ -232,10 +241,7 @@ def assess_capability(
             )
         )
 
-    if (
-        income.net_short_term_capital_gain_loss != 0
-        or income.net_long_term_capital_gain_loss != 0
-    ):
+    if income.net_short_term_capital_gain_loss != 0 or income.net_long_term_capital_gain_loss != 0:
         findings.append(
             _finding(
                 "income.capital_gains",

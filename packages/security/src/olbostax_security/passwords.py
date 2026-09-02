@@ -18,6 +18,7 @@ Three properties matter beyond the algorithm choice:
 
 from __future__ import annotations
 
+import contextlib
 import secrets
 
 from argon2 import PasswordHasher, Type
@@ -73,10 +74,8 @@ def verify_password(stored_hash: str | None, password: str) -> bool:
     cannot enumerate registered email addresses by timing the login endpoint.
     """
     if stored_hash is None:
-        try:
+        with contextlib.suppress(VerifyMismatchError, VerificationError, InvalidHashError):
             _hasher.verify(_DUMMY_HASH, password)
-        except (VerifyMismatchError, VerificationError, InvalidHashError):
-            pass
         return False
 
     try:

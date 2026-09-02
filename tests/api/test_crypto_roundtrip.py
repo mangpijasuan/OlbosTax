@@ -6,13 +6,13 @@ ciphertext in the stored document.
 """
 
 import pytest
-
 from olbostax_api.services.crypto import (
     SENSITIVE_PATHS,
     decrypt_return_input,
     encrypt_return_input,
 )
 from olbostax_engine import compute
+
 from tests.fixtures.synthetic_taxpayers import ALL_SYNTHETIC_TAXPAYERS
 
 

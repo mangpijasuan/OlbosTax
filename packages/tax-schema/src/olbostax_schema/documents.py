@@ -60,7 +60,7 @@ class W2(_DocumentBase):
     box8_allocated_tips: MoneyField
     box10_dependent_care_benefits: MoneyField
     box11_nonqualified_plans: MoneyField
-    box12: list["W2Box12Entry"] = Field(default_factory=list)
+    box12: list[W2Box12Entry] = Field(default_factory=list)
     box13_statutory_employee: bool = False
     box13_retirement_plan: bool = False
     box13_third_party_sick_pay: bool = False

@@ -141,7 +141,7 @@ def redact_mapping(value: Any, _depth: int = 0) -> Any:
             )
             for key, item in value.items()
         }
-    if isinstance(value, (list, tuple, set)):
+    if isinstance(value, list | tuple | set):
         return type(value)(redact_mapping(item, _depth + 1) for item in value)
     if isinstance(value, str):
         return redact_text(value)

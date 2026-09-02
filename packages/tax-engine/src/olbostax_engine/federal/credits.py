@@ -236,7 +236,11 @@ def _earned_income_credit(
     tiers = rules.get("earned_income_credit.tiers")
     tier = next(t for t in tiers if int(t["children"]) == child_count)
 
-    eia = tier["earned_income_amount"]
+    # The tier's "earned income amount" -- the income at which the credit
+    # reaches its maximum -- is not read here: capping the phase-in at
+    # max_credit produces the same result and uses the published maximum as
+    # authoritative rather than deriving it. That the two agree is a property
+    # of the rule file, checked in tests/tax_engine/test_rule_files.py.
     max_credit = tier["max_credit"]
     phase_in = tier["phase_in_rate"]
     phase_out_rate = tier["phase_out_rate"]

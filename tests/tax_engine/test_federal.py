@@ -18,7 +18,6 @@ from datetime import date
 from decimal import Decimal
 
 import pytest
-
 from olbostax_engine import TaxEngine, load_rule_set
 from olbostax_schema import (
     W2,
@@ -30,8 +29,8 @@ from olbostax_schema import (
     Form1099DIV,
     IncomeSection,
     Spouse,
-    TaxReturnInput,
     Taxpayer,
+    TaxReturnInput,
 )
 
 D = Decimal
@@ -406,10 +405,7 @@ class TestSocialSecurityTaxability:
         assert r.total_tax == 0
 
     def test_at_most_85_percent_is_ever_taxable(self, engine):
-        r = engine.compute(self._retiree("40000", "500000")).federal
-        from olbostax_engine import compute
-
-        trace = compute(self._retiree("40000", "500000")).trace
+        trace = engine.compute(self._retiree("40000", "500000")).trace
         assert trace.amount("FED_SS_TAXABLE") <= D("40000") * D("0.85")
 
     def test_more_other_income_increases_the_taxable_portion(self, engine):

@@ -240,5 +240,12 @@ class MockEFileProvider(EFileProvider):
         id itself never carries an SSN into a URL, a log line or a support
         ticket.
         """
-        seed = f"{tax_return.taxpayer.ssn.reveal()}|{tax_return.tax_year}|{jurisdiction.value}|{datetime.now(UTC).isoformat()}"
+        seed = "|".join(
+            (
+                tax_return.taxpayer.ssn.reveal(),
+                str(tax_return.tax_year),
+                jurisdiction.value,
+                datetime.now(UTC).isoformat(),
+            )
+        )
         return hashlib.sha256(seed.encode()).hexdigest()[:32]

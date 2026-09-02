@@ -48,7 +48,7 @@ class SensitiveStr(str):
 
     __slots__ = ()
 
-    def __new__(cls, value: object = "") -> "SensitiveStr":
+    def __new__(cls, value: object = "") -> SensitiveStr:
         return super().__new__(cls, cls._normalize(str(value)))
 
     @classmethod

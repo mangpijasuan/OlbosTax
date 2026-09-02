@@ -112,7 +112,10 @@ def calculate_self_employment_tax(
                 amount=remaining_base,
                 kind=StepKind.LIMITATION,
                 jurisdiction=Jurisdiction.FEDERAL,
-                inputs={"wage_base": wage_base, "w2_social_security_wages": social_security_wages_already_taxed},
+                inputs={
+                    "wage_base": wage_base,
+                    "w2_social_security_wages": social_security_wages_already_taxed,
+                },
                 rule_citation="IRC s.1402(b)(1)",
                 detail=(
                     "Wages from your job already used part of this year's Social "
